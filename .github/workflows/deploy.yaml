@@ -34,7 +34,7 @@ jobs:
           context: .
           file: ./build/Dockerfile
           push: true
-          tags: unbar-api:latest
+          tags: ghcr.io/${{ github.actor }}/unbar-api:latest
       
 
   infra:
