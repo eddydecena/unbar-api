@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: ./build/Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      DB: postgres
+      DB_CONNECTION_STRING: postgres://postgres:admin@database:5432/postgres
+    depends_on: 
+      database:
+        condition: service_healthy
+  database:
+    image: postgres:15.1-alpine
+    ports:
+      - "5432:5432"
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: postgres
+      POSTGRES_DB: unbar
+      POSTGRES_INITDB_ARGS: "--locale-provider=icu --icu-locale=en"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
